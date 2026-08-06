@@ -8,34 +8,26 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <!-- SheetJS (엑셀 다운로드 라이브러리) -->
+    <!-- SheetJS (엑셀 다운로드) -->
     <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
     <!-- FontAwesome 아이콘 -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; background-color: #f4f7fa; color: #334155; }
         
-        /* 파스텔 탭 & 버튼 스타일 */
         .month-btn { padding: 6px 14px; border-radius: 8px; border: 1px solid #e2e8f0; background-color: #ffffff; color: #64748b; font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.2s; }
         .month-btn.active { background-color: #0284c7; color: #ffffff; border-color: #0284c7; font-weight: 700; box-shadow: 0 2px 6px rgba(2, 132, 199, 0.25); }
         .month-btn:hover:not(.active) { background-color: #f0f9ff; color: #0369a1; }
         
-        .tab-btn { padding: 12px 20px; font-size: 14px; font-weight: 700; color: #64748b; border-bottom: 3px solid transparent; cursor: pointer; transition: all 0.2s; }
+        .tab-btn { padding: 12px 20px; font-size: 14px; font-weight: 700; color: #64748b; border-bottom: 3px solid transparent; cursor: pointer; transition: all 0.2s; white-space: nowrap; }
         .tab-btn.active { color: #0284c7; border-bottom-color: #38bdf8; background-color: #ffffff; border-top-left-radius: 8px; border-top-right-radius: 8px; }
         
-        /* 파스텔 카드 스타일 */
         .card { background-color: #ffffff; border-radius: 14px; border: 1px solid #e2e8f0; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02); padding: 20px; }
         .kpi-title { font-size: 12px; font-weight: 700; color: #64748b; margin-bottom: 6px; display: flex; justify-content: space-between; align-items: center; }
         .kpi-value { font-size: 21px; font-weight: 800; letter-spacing: -0.02em; }
         .kpi-sub { font-size: 11px; color: #94a3b8; margin-top: 6px; font-weight: 500; }
-        .kpi-link { font-size: 11px; color: #0284c7; font-weight: 700; margin-top: 10px; display: inline-flex; align-items: center; gap: 4px; cursor: pointer; }
-        .kpi-link:hover { text-decoration: underline; color: #0369a1; }
 
-        /* 파스텔 상세보기 버튼 */
-        .detail-btn {
-            display: inline-flex; align-items: center; gap: 4px; font-size: 11px; font-weight: 700;
-            padding: 5px 10px; border-radius: 8px; transition: all 0.2s; cursor: pointer;
-        }
+        .detail-btn { display: inline-flex; align-items: center; gap: 4px; font-size: 11px; font-weight: 700; padding: 5px 10px; border-radius: 8px; transition: all 0.2s; cursor: pointer; }
         .detail-btn-blue { background-color: #e0f2fe; color: #0369a1; border: 1px solid #bae6fd; }
         .detail-btn-blue:hover { background-color: #bae6fd; }
         .detail-btn-purple { background-color: #f3e8ff; color: #6b21a8; border: 1px solid #e9d5ff; }
@@ -43,10 +35,7 @@
         .detail-btn-green { background-color: #dcfce7; color: #15803d; border: 1px solid #bbf7d0; }
         .detail-btn-green:hover { background-color: #bbf7d0; }
 
-        .modal-backdrop {
-            background-color: rgba(100, 116, 139, 0.3);
-            backdrop-filter: blur(4px);
-        }
+        .modal-backdrop { background-color: rgba(100, 116, 139, 0.3); backdrop-filter: blur(4px); }
     </style>
 </head>
 <body class="p-6">
@@ -90,14 +79,14 @@
             </div>
         </div>
 
-        <!-- Main Navigation Tabs -->
+        <!-- 📌 탭 순서 변경: 종합 개요 -> 일별 -> 월별 -> 연도별 -> 모델별 -> 마켓별 -->
         <div class="flex border-b border-slate-200 gap-1 bg-slate-100/70 p-1 rounded-t-2xl overflow-x-auto">
-            <button class="tab-btn active"><i class="fa-solid fa-chart-pie mr-1.5"></i>종합 개요</button>
-            <button class="tab-btn"><i class="fa-solid fa-chart-line mr-1.5"></i>일별 실적</button>
-            <button class="tab-btn"><i class="fa-solid fa-calendar-days mr-1.5"></i>월별 실적</button>
-            <button class="tab-btn"><i class="fa-solid fa-ranking-star mr-1.5"></i>모델별 순위</button>
-            <button class="tab-btn"><i class="fa-solid fa-store mr-1.5"></i>마켓별 분석</button>
-            <button class="tab-btn"><i class="fa-solid fa-table-list mr-1.5"></i>전체 리더보드</button>
+            <button class="tab-btn active" onclick="switchTab('overview')"><i class="fa-solid fa-chart-pie mr-1.5"></i>종합 개요</button>
+            <button class="tab-btn" onclick="switchTab('daily')"><i class="fa-solid fa-chart-line mr-1.5"></i>일별 실적</button>
+            <button class="tab-btn" onclick="switchTab('monthly')"><i class="fa-solid fa-calendar-days mr-1.5"></i>월별 실적</button>
+            <button class="tab-btn" onclick="switchTab('yearly')"><i class="fa-solid fa-calendar font-bold mr-1.5"></i>연도별 실적</button>
+            <button class="tab-btn" onclick="switchTab('ranking')"><i class="fa-solid fa-ranking-star mr-1.5"></i>모델별 순위</button>
+            <button class="tab-btn" onclick="switchTab('market')"><i class="fa-solid fa-store mr-1.5"></i>마켓별 분석</button>
         </div>
 
         <!-- Filter Section -->
@@ -111,23 +100,21 @@
 
             <!-- Month Quick Select -->
             <div>
-                <div class="flex justify-between items-center mb-2">
-                    <p class="text-xs text-slate-700 font-bold">월 빠른 선택</p>
-                </div>
+                <p class="text-xs text-slate-700 font-bold mb-2">월 빠른 선택</p>
                 <div class="flex flex-wrap gap-1.5">
-                    <button class="month-btn active" onclick="filterByMonth('all')">전체 (1~12월)</button>
-                    <button class="month-btn" onclick="filterByMonth('1')">1월</button>
-                    <button class="month-btn" onclick="filterByMonth('2')">2월</button>
-                    <button class="month-btn" onclick="filterByMonth('3')">3월</button>
-                    <button class="month-btn" onclick="filterByMonth('4')">4월</button>
-                    <button class="month-btn" onclick="filterByMonth('5')">5월</button>
-                    <button class="month-btn" onclick="filterByMonth('6')">6월</button>
-                    <button class="month-btn" onclick="filterByMonth('7')">7월</button>
-                    <button class="month-btn" onclick="filterByMonth('8')">8월</button>
-                    <button class="month-btn" onclick="filterByMonth('9')">9월</button>
-                    <button class="month-btn" onclick="filterByMonth('10')">10월</button>
-                    <button class="month-btn" onclick="filterByMonth('11')">11월</button>
-                    <button class="month-btn" onclick="filterByMonth('12')">12월</button>
+                    <button class="month-btn active" onclick="filterByMonth('all', event)">전체 (1~12월)</button>
+                    <button class="month-btn" onclick="filterByMonth('1', event)">1월</button>
+                    <button class="month-btn" onclick="filterByMonth('2', event)">2월</button>
+                    <button class="month-btn" onclick="filterByMonth('3', event)">3월</button>
+                    <button class="month-btn" onclick="filterByMonth('4', event)">4월</button>
+                    <button class="month-btn" onclick="filterByMonth('5', event)">5월</button>
+                    <button class="month-btn" onclick="filterByMonth('6', event)">6월</button>
+                    <button class="month-btn" onclick="filterByMonth('7', event)">7월</button>
+                    <button class="month-btn" onclick="filterByMonth('8', event)">8월</button>
+                    <button class="month-btn" onclick="filterByMonth('9', event)">9월</button>
+                    <button class="month-btn" onclick="filterByMonth('10', event)">10월</button>
+                    <button class="month-btn" onclick="filterByMonth('11', event)">11월</button>
+                    <button class="month-btn" onclick="filterByMonth('12', event)">12월</button>
                 </div>
             </div>
 
@@ -165,163 +152,193 @@
             </div>
         </div>
 
-        <!-- 실시간 현황 요약 카드 -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <!-- 오늘 판매 현황 -->
-            <div class="card border-l-4 border-l-sky-400 bg-gradient-to-br from-sky-50/60 via-white to-white flex flex-col justify-between">
-                <div>
-                    <div class="flex justify-between items-center mb-2">
-                        <span class="text-xs font-bold text-sky-800 bg-sky-100 px-2.5 py-0.5 rounded-md border border-sky-200 flex items-center gap-1.5">
-                            <i class="fa-regular fa-clock"></i> 오늘 실적 (<span id="todayDateLabel">-</span>)
-                        </span>
-                        <span class="text-[11px] text-sky-600 font-extrabold flex items-center gap-1"><i class="fa-solid fa-bolt"></i> LIVE</span>
+        <!-- TAB 1: 종합 개요 -->
+        <div id="tab-overview" class="tab-content space-y-5">
+            <!-- 실시간 현황 카드 -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div class="card border-l-4 border-l-sky-400 bg-gradient-to-br from-sky-50/60 via-white to-white flex flex-col justify-between">
+                    <div>
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="text-xs font-bold text-sky-800 bg-sky-100 px-2.5 py-0.5 rounded-md border border-sky-200 flex items-center gap-1.5">
+                                <i class="fa-regular fa-clock"></i> 오늘 실적 (<span id="todayDateLabel">-</span>)
+                            </span>
+                            <span class="text-[11px] text-sky-600 font-extrabold flex items-center gap-1"><i class="fa-solid fa-bolt"></i> LIVE</span>
+                        </div>
+                        <div class="grid grid-cols-2 gap-2 mt-3">
+                            <div>
+                                <p class="text-xs text-slate-500 font-bold">오늘 판매수량</p>
+                                <p class="text-2xl font-black text-slate-800 mt-0.5" id="kpiTodayQty">0<span class="text-xs font-medium text-slate-400 ml-0.5">개</span></p>
+                            </div>
+                            <div>
+                                <p class="text-xs text-slate-500 font-bold">오늘 정산가</p>
+                                <p class="text-2xl font-black text-sky-600 mt-0.5" id="kpiTodayPrice">0<span class="text-xs font-medium text-slate-400 ml-0.5">원</span></p>
+                            </div>
+                        </div>
                     </div>
-                    <div class="grid grid-cols-2 gap-2 mt-3">
-                        <div>
-                            <p class="text-xs text-slate-500 font-bold">오늘 판매수량</p>
-                            <p class="text-2xl font-black text-slate-800 mt-0.5" id="kpiTodayQty">0<span class="text-xs font-medium text-slate-400 ml-0.5">개</span></p>
-                        </div>
-                        <div>
-                            <p class="text-xs text-slate-500 font-bold">오늘 정산가</p>
-                            <p class="text-2xl font-black text-sky-600 mt-0.5" id="kpiTodayPrice">0<span class="text-xs font-medium text-slate-400 ml-0.5">원</span></p>
-                        </div>
+                    <div class="pt-3 border-t border-slate-100 mt-3 flex justify-between items-center">
+                        <p class="text-[11px] text-slate-400 font-medium">구글 시트 자동 동기화</p>
+                        <button onclick="showDetailModal('today')" class="detail-btn detail-btn-blue"><i class="fa-solid fa-magnifying-glass"></i> 자세히보기</button>
                     </div>
                 </div>
-                <div class="pt-3 border-t border-slate-100 mt-3 flex justify-between items-center">
-                    <p class="text-[11px] text-slate-400 flex items-center gap-1 font-medium">
-                        구글 시트 자동 동기화
-                    </p>
-                    <button onclick="showDetailModal('today')" class="detail-btn detail-btn-blue">
-                        <i class="fa-solid fa-magnifying-glass"></i> 자세히보기
-                    </button>
+
+                <div class="card border-l-4 border-l-purple-300 bg-gradient-to-br from-purple-50/60 via-white to-white flex flex-col justify-between">
+                    <div>
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="text-xs font-bold text-purple-800 bg-purple-100 px-2.5 py-0.5 rounded-md border border-purple-200 flex items-center gap-1.5">
+                                <i class="fa-regular fa-circle-check"></i> 어제 최종 (<span id="yesterdayDateLabel">-</span>)
+                            </span>
+                            <span class="text-[11px] text-slate-400 font-medium">마감 완료</span>
+                        </div>
+                        <div class="grid grid-cols-2 gap-2 mt-3">
+                            <div>
+                                <p class="text-xs text-slate-500 font-bold">어제 판매수량</p>
+                                <p class="text-2xl font-black text-slate-800 mt-0.5" id="kpiYesterdayQty">0<span class="text-xs font-medium text-slate-400 ml-0.5">개</span></p>
+                            </div>
+                            <div>
+                                <p class="text-xs text-slate-500 font-bold">어제 정산가</p>
+                                <p class="text-2xl font-black text-purple-600 mt-0.5" id="kpiYesterdayPrice">0<span class="text-xs font-medium text-slate-400 ml-0.5">원</span></p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="pt-3 border-t border-slate-100 mt-3 flex justify-between items-center">
+                        <p class="text-[11px] text-slate-400 font-medium">총 항목수: <strong class="text-slate-700" id="kpiYesterdayCount">0건</strong></p>
+                        <button onclick="showDetailModal('yesterday')" class="detail-btn detail-btn-purple"><i class="fa-solid fa-magnifying-glass"></i> 자세히보기</button>
+                    </div>
+                </div>
+
+                <div class="card border-l-4 border-l-emerald-400 bg-gradient-to-br from-emerald-50/60 via-white to-white flex flex-col justify-between">
+                    <div>
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="text-xs font-bold text-emerald-800 bg-emerald-100 px-2.5 py-0.5 rounded-md border border-emerald-200 flex items-center gap-1.5">
+                                <i class="fa-regular fa-calendar font-bold"></i> 주간 실적 (월~일)
+                            </span>
+                            <span id="weeklyDateRangeText" class="text-[11px] text-emerald-700 font-bold">-</span>
+                        </div>
+                        <div class="grid grid-cols-2 gap-2 mt-3">
+                            <div>
+                                <p class="text-xs text-slate-500 font-bold">주간 판매수량</p>
+                                <p class="text-2xl font-black text-slate-800 mt-0.5" id="kpiWeeklyQty">0<span class="text-xs font-medium text-slate-400 ml-0.5">개</span></p>
+                            </div>
+                            <div>
+                                <p class="text-xs text-slate-500 font-bold">주간 정산가</p>
+                                <p class="text-2xl font-black text-emerald-600 mt-0.5" id="kpiWeeklyPrice">0<span class="text-xs font-medium text-slate-400 ml-0.5">원</span></p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="pt-3 border-t border-slate-100 mt-3 flex justify-between items-center">
+                        <p class="text-[11px] text-slate-400 font-medium">총 항목수: <strong class="text-slate-700" id="kpiWeeklyCount">0건</strong></p>
+                        <button onclick="showDetailModal('weekly')" class="detail-btn detail-btn-green"><i class="fa-solid fa-magnifying-glass"></i> 자세히보기</button>
+                    </div>
                 </div>
             </div>
 
-            <!-- 어제 판매 현황 -->
-            <div class="card border-l-4 border-l-purple-300 bg-gradient-to-br from-purple-50/60 via-white to-white flex flex-col justify-between">
-                <div>
-                    <div class="flex justify-between items-center mb-2">
-                        <span class="text-xs font-bold text-purple-800 bg-purple-100 px-2.5 py-0.5 rounded-md border border-purple-200 flex items-center gap-1.5">
-                            <i class="fa-regular fa-circle-check"></i> 어제 최종 (<span id="yesterdayDateLabel">-</span>)
-                        </span>
-                        <span class="text-[11px] text-slate-400 font-medium">마감 완료</span>
-                    </div>
-                    <div class="grid grid-cols-2 gap-2 mt-3">
-                        <div>
-                            <p class="text-xs text-slate-500 font-bold">어제 판매수량</p>
-                            <p class="text-2xl font-black text-slate-800 mt-0.5" id="kpiYesterdayQty">0<span class="text-xs font-medium text-slate-400 ml-0.5">개</span></p>
-                        </div>
-                        <div>
-                            <p class="text-xs text-slate-500 font-bold">어제 정산가</p>
-                            <p class="text-2xl font-black text-purple-600 mt-0.5" id="kpiYesterdayPrice">0<span class="text-xs font-medium text-slate-400 ml-0.5">원</span></p>
-                        </div>
-                    </div>
+            <!-- 핵심 KPI -->
+            <div class="grid grid-cols-2 md:grid-cols-6 gap-3">
+                <div class="card hover:border-sky-300 transition">
+                    <div class="kpi-title">누적 총 정산가</div>
+                    <div class="kpi-value text-sky-600" id="kpiTotalRevenue">0원</div>
+                    <div class="kpi-sub" id="kpiTotalRowsText">0건 누적</div>
                 </div>
-                <div class="pt-3 border-t border-slate-100 mt-3 flex justify-between items-center">
-                    <p class="text-[11px] text-slate-400 font-medium">
-                        총 항목수: <strong class="text-slate-700" id="kpiYesterdayCount">0건</strong>
-                    </p>
-                    <button onclick="showDetailModal('yesterday')" class="detail-btn detail-btn-purple">
-                        <i class="fa-solid fa-magnifying-glass"></i> 자세히보기
-                    </button>
+                <div class="card hover:border-sky-300 transition">
+                    <div class="kpi-title">누적 총 주문수</div>
+                    <div class="kpi-value text-sky-600" id="kpiTotalCount">0건</div>
+                    <div class="kpi-sub">선택 필터 적용 기준</div>
+                </div>
+                <div class="card hover:border-emerald-300 transition">
+                    <div class="kpi-title">누적 판매수량</div>
+                    <div class="kpi-value text-emerald-600" id="kpiTotalQty">0개</div>
+                    <div class="kpi-sub">총 제품 판매합계</div>
+                </div>
+                <div class="card">
+                    <div class="kpi-title">평균 정산 단가</div>
+                    <div class="kpi-value text-slate-700" id="kpiAvgPrice">0원</div>
+                    <div class="kpi-sub">건당 평균 매출액</div>
+                </div>
+                <div class="card">
+                    <div class="kpi-title">1위 매출 모델</div>
+                    <div class="kpi-value text-slate-700 text-base truncate mt-1" id="kpiTopModel">-</div>
+                    <div class="kpi-sub">매출액 최다 기록</div>
+                </div>
+                <div class="card">
+                    <div class="kpi-title">1위 점유 마켓</div>
+                    <div class="kpi-value text-teal-600 text-lg mt-1" id="kpiTopMarket">-</div>
+                    <div class="kpi-sub" id="kpiTopMarketShare">점유율 0%</div>
                 </div>
             </div>
 
-            <!-- 주간 판매 현황 -->
-            <div class="card border-l-4 border-l-emerald-400 bg-gradient-to-br from-emerald-50/60 via-white to-white flex flex-col justify-between">
-                <div>
-                    <div class="flex justify-between items-center mb-2">
-                        <span class="text-xs font-bold text-emerald-800 bg-emerald-100 px-2.5 py-0.5 rounded-md border border-emerald-200 flex items-center gap-1.5">
-                            <i class="fa-regular fa-calendar font-bold"></i> 주간 실적 (월~일)
-                        </span>
-                        <span id="weeklyDateRangeText" class="text-[11px] text-emerald-700 font-bold">-</span>
+            <!-- Charts -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="card">
+                    <div class="flex justify-between items-center mb-4 border-b border-slate-100 pb-3">
+                        <h3 class="text-sm font-extrabold text-slate-800 flex items-center gap-2"><i class="fa-solid fa-chart-pie text-sky-500"></i> 카테고리별 매출 비중</h3>
+                        <span class="text-xs text-slate-400 font-medium">단위: 원</span>
                     </div>
-                    <div class="grid grid-cols-2 gap-2 mt-3">
-                        <div>
-                            <p class="text-xs text-slate-500 font-bold">주간 판매수량</p>
-                            <p class="text-2xl font-black text-slate-800 mt-0.5" id="kpiWeeklyQty">0<span class="text-xs font-medium text-slate-400 ml-0.5">개</span></p>
-                        </div>
-                        <div>
-                            <p class="text-xs text-slate-500 font-bold">주간 정산가</p>
-                            <p class="text-2xl font-black text-emerald-600 mt-0.5" id="kpiWeeklyPrice">0<span class="text-xs font-medium text-slate-400 ml-0.5">원</span></p>
-                        </div>
+                    <div class="p-2 relative h-64 flex items-center justify-center">
+                        <canvas id="chartCategoryOverview"></canvas>
                     </div>
                 </div>
-                <div class="pt-3 border-t border-slate-100 mt-3 flex justify-between items-center">
-                    <p class="text-[11px] text-slate-400 font-medium">
-                        총 항목수: <strong class="text-slate-700" id="kpiWeeklyCount">0건</strong>
-                    </p>
-                    <button onclick="showDetailModal('weekly')" class="detail-btn detail-btn-green">
-                        <i class="fa-solid fa-magnifying-glass"></i> 자세히보기
-                    </button>
+                <div class="card">
+                    <div class="flex justify-between items-center mb-4 border-b border-slate-100 pb-3">
+                        <h3 class="text-sm font-extrabold text-slate-800 flex items-center gap-2"><i class="fa-solid fa-chart-line text-emerald-500"></i> 마켓별 매출 점유율</h3>
+                        <span class="text-xs text-slate-400 font-medium">단위: 원</span>
+                    </div>
+                    <div class="p-2 relative h-64 flex items-center justify-center">
+                        <canvas id="chartMarketOverview"></canvas>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <!-- 핵심 KPI 리포트 영역 -->
-        <div class="grid grid-cols-2 md:grid-cols-6 gap-3">
-            <div class="card hover:border-sky-300 transition">
-                <div class="kpi-title">누적 총 정산가 <i class="fa-solid fa-circle-info text-slate-300"></i></div>
-                <div class="kpi-value text-sky-600" id="kpiTotalRevenue">0원</div>
-                <div class="kpi-sub" id="kpiTotalRowsText">0건 누적</div>
-            </div>
-            <div class="card hover:border-sky-300 transition">
-                <div class="kpi-title">누적 총 주문수 <i class="fa-solid fa-circle-info text-slate-300"></i></div>
-                <div class="kpi-value text-sky-600" id="kpiTotalCount">0건</div>
-                <div class="kpi-sub">선택 필터 적용 기준</div>
-            </div>
-            <div class="card hover:border-emerald-300 transition">
-                <div class="kpi-title">누적 판매수량 <i class="fa-solid fa-circle-info text-slate-300"></i></div>
-                <div class="kpi-value text-emerald-600" id="kpiTotalQty">0개</div>
-                <div class="kpi-sub">총 제품 판매합계</div>
-            </div>
-            <div class="card">
-                <div class="kpi-title">평균 정산 단가 <i class="fa-solid fa-circle-info text-slate-300"></i></div>
-                <div class="kpi-value text-slate-700" id="kpiAvgPrice">0원</div>
-                <div class="kpi-sub">건당 평균 매출액</div>
-            </div>
-            <div class="card">
-                <div class="kpi-title">1위 매출 모델 <i class="fa-solid fa-circle-info text-slate-300"></i></div>
-                <div class="kpi-value text-slate-700 text-base truncate mt-1" id="kpiTopModel">-</div>
-                <div class="kpi-sub">매출액 최다 기록</div>
-            </div>
-            <div class="card">
-                <div class="kpi-title">1위 점유 마켓 <i class="fa-solid fa-circle-info text-slate-300"></i></div>
-                <div class="kpi-value text-teal-600 text-lg mt-1" id="kpiTopMarket">-</div>
-                <div class="kpi-sub" id="kpiTopMarketShare">점유율 0%</div>
-            </div>
-        </div>
+        <!-- TAB 2: 일별 실적 -->
+        <div id="tab-daily" class="tab-content hidden card p-8 text-center text-slate-400">일별 상세 데이터 영역입니다.</div>
 
-        <!-- Main Chart Section -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <!-- TAB 3: 월별 실적 -->
+        <div id="tab-monthly" class="tab-content hidden card p-8 text-center text-slate-400">월별 상세 데이터 영역입니다.</div>
+
+        <!-- TAB 4: 연도별 실적 -->
+        <div id="tab-yearly" class="tab-content hidden space-y-5">
             <div class="card">
                 <div class="flex justify-between items-center mb-4 border-b border-slate-100 pb-3">
                     <h3 class="text-sm font-extrabold text-slate-800 flex items-center gap-2">
-                        <i class="fa-solid fa-chart-pie text-sky-500"></i> 카테고리별 매출 비중 (시트 수집 기반)
+                        <i class="fa-solid fa-chart-bar text-sky-600"></i> 연도별 매출 & 판매 수량 비교
                     </h3>
-                    <span class="text-xs text-slate-400 font-medium">단위: 원</span>
+                    <span class="text-xs text-slate-400 font-medium">구글 시트 연도 기준 자동 합계</span>
                 </div>
-                <div class="p-2 relative h-64 flex items-center justify-center">
-                    <canvas id="chartCategoryOverview"></canvas>
+                <div class="p-2 relative h-72">
+                    <canvas id="chartYearly"></canvas>
                 </div>
             </div>
 
             <div class="card">
-                <div class="flex justify-between items-center mb-4 border-b border-slate-100 pb-3">
+                <div class="border-b border-slate-100 pb-3 mb-3">
                     <h3 class="text-sm font-extrabold text-slate-800 flex items-center gap-2">
-                        <i class="fa-solid fa-chart-line text-emerald-500"></i> 마켓별 매출 점유율 (시트 수집 기반)
+                        <i class="fa-solid fa-table-list text-sky-600"></i> 연도별 실적 요약
                     </h3>
-                    <span class="text-xs text-slate-400 font-medium">단위: 원</span>
                 </div>
-                <div class="p-2 relative h-64 flex items-center justify-center">
-                    <canvas id="chartMarketOverview"></canvas>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-xs border-collapse">
+                        <thead>
+                            <tr class="bg-sky-50/60 text-slate-700 font-bold border-b border-sky-100">
+                                <th class="p-3">연도</th>
+                                <th class="p-3 text-right">주문 건수</th>
+                                <th class="p-3 text-right">총 판매 수량</th>
+                                <th class="p-3 text-right">총 정산 금액</th>
+                                <th class="p-3 text-right">건당 평균 정산가</th>
+                            </tr>
+                        </thead>
+                        <tbody id="yearlyTableBody" class="divide-y divide-slate-100"></tbody>
+                    </table>
                 </div>
             </div>
         </div>
+
+        <!-- TAB 5, 6: 모델별 순위 / 마켓별 분석 -->
+        <div id="tab-ranking" class="tab-content hidden card p-8 text-center text-slate-400">모델별 순위 데이터 영역입니다.</div>
+        <div id="tab-market" class="tab-content hidden card p-8 text-center text-slate-400">마켓별 상세 데이터 영역입니다.</div>
 
     </div>
 
-    <!-- 상세 보기 & 엑셀 다운로드 모달 팝업 -->
+    <!-- 상세 보기 모달 -->
     <div id="dataModal" class="fixed inset-0 modal-backdrop z-50 hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-2xl shadow-xl w-full max-w-4xl max-h-[85vh] flex flex-col overflow-hidden border border-slate-200">
             <div class="p-5 border-b border-slate-100 flex justify-between items-center bg-slate-50/80">
@@ -329,19 +346,15 @@
                     <h3 id="modalTitle" class="text-base font-bold text-slate-800 flex items-center gap-2">
                         <i class="fa-solid fa-table-cells-large text-sky-600"></i> 상세 판매 실적 데이터
                     </h3>
-                    <p class="text-xs text-slate-500 mt-0.5">구글 시트 연동 상세 내역입니다.</p>
                 </div>
-                <button onclick="closeModal()" class="text-slate-400 hover:text-slate-600 p-2 text-lg">
-                    <i class="fa-solid fa-xmark"></i>
-                </button>
+                <button onclick="closeModal()" class="text-slate-400 hover:text-slate-600 p-2 text-lg"><i class="fa-solid fa-xmark"></i></button>
             </div>
-
             <div class="p-5 overflow-y-auto flex-1">
                 <table class="w-full text-left text-xs border-collapse">
                     <thead>
                         <tr class="bg-sky-50/60 text-slate-700 font-bold border-b border-sky-100">
                             <th class="p-3">일자</th>
-                            <th class="p-3">판매 마켓(사이트)</th>
+                            <th class="p-3">판매 마켓</th>
                             <th class="p-3">카테고리</th>
                             <th class="p-3">모델명</th>
                             <th class="p-3 text-right">판매수량</th>
@@ -351,35 +364,61 @@
                     <tbody id="modalTableBody" class="divide-y divide-slate-100"></tbody>
                 </table>
             </div>
-
             <div class="p-4 border-t border-slate-100 bg-slate-50/80 flex justify-between items-center">
                 <span id="modalTotalSummary" class="text-xs font-bold text-slate-700">총 0건</span>
                 <div class="flex gap-2">
-                    <button onclick="downloadExcel()" class="bg-emerald-500 hover:bg-emerald-600 text-white text-xs font-bold px-4 py-2 rounded-xl flex items-center gap-1.5 shadow-xs transition">
-                        <i class="fa-solid fa-file-excel"></i> 엑셀로 다운로드
-                    </button>
-                    <button onclick="closeModal()" class="bg-slate-200 hover:bg-slate-300 text-slate-700 text-xs font-bold px-4 py-2 rounded-xl transition">
-                        닫기
-                    </button>
+                    <button onclick="downloadExcel()" class="bg-emerald-500 hover:bg-emerald-600 text-white text-xs font-bold px-4 py-2 rounded-xl transition"><i class="fa-solid fa-file-excel mr-1"></i> 엑셀 다운로드</button>
+                    <button onclick="closeModal()" class="bg-slate-200 hover:bg-slate-300 text-slate-700 text-xs font-bold px-4 py-2 rounded-xl transition">닫기</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- 스크립트 영역 -->
+    <!-- 자바스크립트 영역 -->
     <script>
-        // 📌 [구글 시트 CSV 주소] 구글 시트에서 [파일] > [공유] > [웹에 게시] 선택 후 CSV URL 입력
+        // 📌 [구글 시트 CSV 주소] 구글 시트 웹에 게시한 CSV URL 입력
         const GOOGLE_SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQT-iGlAkK1dRseLYlz_QJJJAN1iGDyx-hNPY1bXxJz_VKrZEqL0hNhIDDu4WBOCwKgEbaLgWY8GhPl/pub?gid=1856877575&single=true&output=csv";
 
-        let rawSheetData = [];      // 구글 시트 원본 데이터
-        let filteredSheetData = []; // 필터링 적용 데이터
+        let rawSheetData = [];
+        let filteredSheetData = [];
         let currentModalData = [];
         let currentTitle = "";
 
         let categoryChartInstance = null;
         let marketChartInstance = null;
+        let yearlyChartInstance = null;
 
-        // CSV 문자열 파싱 함수
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.add('hidden'));
+
+            if (event && event.currentTarget) {
+                event.currentTarget.classList.add('active');
+            }
+            
+            const targetContent = document.getElementById(`tab-${tabId}`);
+            if (targetContent) targetContent.classList.remove('hidden');
+
+            if (tabId === 'yearly') {
+                updateYearlyTab();
+            }
+        }
+
+        // 📌 [날짜 파싱 로직 보완] 2026-8-3 -> 2026-08-03 (표준 ISO 포맷 변환)
+        function cleanDateStr(dateStr) {
+            if (!dateStr) return '';
+            const cleaned = String(dateStr).replace(/[\.\/]/g, '-').trim();
+            const parts = cleaned.split('-');
+            
+            if (parts.length === 3) {
+                const y = parts[0];
+                const m = parts[1].padStart(2, '0');
+                const d = parts[2].padStart(2, '0');
+                return `${y}-${m}-${d}`;
+            }
+            return cleaned;
+        }
+
         function parseCSV(csvText) {
             const lines = csvText.trim().split(/\r\n|\n/);
             if (lines.length < 2) return [];
@@ -414,7 +453,6 @@
             return result;
         }
 
-        // 구글 시트 연동 데이터 가져오기
         async function fetchSheetData() {
             document.getElementById('syncStatusText').innerText = "구글 시트 연동 데이터를 가져오는 중입니다...";
             try {
@@ -424,27 +462,27 @@
                 const csvText = await response.text();
                 const parsed = parseCSV(csvText);
 
-                // 시트 데이터 구조화
-                rawSheetData = parsed.map(item => ({
-                    date: String(item['일자'] || '').trim(),
-                    market: String(item['판매 마켓'] || item['마켓'] || '기타').trim(),
-                    category: String(item['카테고리'] || '기타').trim(),
-                    model: String(item['모델명'] || item['모델'] || '-').trim(),
-                    qty: Number(String(item['수량'] || 0).replace(/[^0-9.-]+/g, "")) || 0,
-                    price: Number(String(item['정산금액'] || item['정산가'] || 0).replace(/[^0-9.-]+/g, "")) || 0
-                })).filter(row => row.date !== '');
+                rawSheetData = parsed.map(item => {
+                    const rawDate = cleanDateStr(item['일자']);
+                    const year = rawDate ? rawDate.split('-')[0] : '기타';
+                    return {
+                        date: rawDate,
+                        year: year,
+                        market: String(item['판매 마켓'] || item['마켓'] || '기타').trim(),
+                        category: String(item['카테고리'] || '기타').trim(),
+                        model: String(item['모델명'] || item['모델'] || '-').trim(),
+                        qty: Number(String(item['수량'] || 0).replace(/[^0-9.-]+/g, "")) || 0,
+                        price: Number(String(item['정산금액'] || item['정산가'] || 0).replace(/[^0-9.-]+/g, "")) || 0
+                    };
+                }).filter(row => row.date !== '');
 
                 filteredSheetData = [...rawSheetData];
 
-                // 업데이트 타임스탬프
                 const now = new Date();
                 document.getElementById('lastUpdatedText').innerText = `${now.toLocaleDateString()} ${now.toLocaleTimeString('ko-KR', {hour:'2-digit', minute:'2-digit'})}`;
-                document.getElementById('syncStatusText').innerHTML = `구글 시트 연동 완료! 총 <strong>${rawSheetData.length.toLocaleString()}건</strong>의 데이터를 실시간 수집했습니다.`;
+                document.getElementById('syncStatusText').innerHTML = `구글 시트 연동 완료! 총 <strong>${rawSheetData.length.toLocaleString()}건</strong>의 데이터를 수집했습니다.`;
 
-                // 필터 셀렉트박스 옵션 동적 채우기
                 populateFilterDropdowns();
-
-                // 대시보드 화면 구성 요소 계산 및 갱신
                 updateDashboard();
 
             } catch (error) {
@@ -453,7 +491,6 @@
             }
         }
 
-        // 필터 드롭다운 동적 구성
         function populateFilterDropdowns() {
             const markets = [...new Set(rawSheetData.map(d => d.market))].filter(Boolean);
             const categories = [...new Set(rawSheetData.map(d => d.category))].filter(Boolean);
@@ -467,7 +504,6 @@
             categories.forEach(c => categorySelect.innerHTML += `<option value="${c}">${c}</option>`);
         }
 
-        // 월~일 범위 계산
         function getMondayToSundayDates() {
             const today = new Date();
             const dayOfWeek = today.getDay();
@@ -484,15 +520,14 @@
             return { monday, sunday };
         }
 
-        // 대시보드 수치 & 차트 통합 업데이트
         function updateDashboard() {
             updateRealtimeCards();
             updateKpiCards();
             updateCategoryChart();
             updateMarketChart();
+            updateYearlyTab();
         }
 
-        // 실시간 상단 카드(오늘, 어제, 주간)
         function updateRealtimeCards() {
             const todayObj = new Date();
             const todayStr = todayObj.toISOString().split('T')[0];
@@ -530,7 +565,6 @@
             document.getElementById('kpiWeeklyCount').innerText = `${weeklyData.length}건`;
         }
 
-        // 핵심 KPI 계산
         function updateKpiCards() {
             const data = filteredSheetData;
             const totalRows = data.length;
@@ -548,13 +582,11 @@
             document.getElementById('kpiTotalQty').innerText = `${totalQty.toLocaleString()}개`;
             document.getElementById('kpiAvgPrice').innerText = `${avgPrice.toLocaleString()}원`;
 
-            // 1위 모델
             const modelTotals = {};
             data.forEach(r => modelTotals[r.model] = (modelTotals[r.model] || 0) + r.price);
             const topModel = Object.entries(modelTotals).sort((a,b) => b[1] - a[1])[0];
             document.getElementById('kpiTopModel').innerText = topModel ? topModel[0] : '-';
 
-            // 1위 마켓
             const marketTotals = {};
             data.forEach(r => marketTotals[r.market] = (marketTotals[r.market] || 0) + r.price);
             const topMarket = Object.entries(marketTotals).sort((a,b) => b[1] - a[1])[0];
@@ -569,7 +601,6 @@
             }
         }
 
-        // 카테고리별 차트 자동 수집 및 갱신
         function updateCategoryChart() {
             const categoryTotals = {};
             filteredSheetData.forEach(r => {
@@ -600,7 +631,6 @@
             });
         }
 
-        // 마켓별 차트 자동 수집 및 갱신
         function updateMarketChart() {
             const marketTotals = {};
             filteredSheetData.forEach(r => {
@@ -631,7 +661,77 @@
             });
         }
 
-        // 필터링 적용 logic
+        function updateYearlyTab() {
+            const yearlyMap = {};
+
+            filteredSheetData.forEach(r => {
+                const yr = r.year || '기타';
+                if(!yearlyMap[yr]) {
+                    yearlyMap[yr] = { count: 0, qty: 0, price: 0 };
+                }
+                yearlyMap[yr].count += 1;
+                yearlyMap[yr].qty += r.qty;
+                yearlyMap[yr].price += r.price;
+            });
+
+            const years = Object.keys(yearlyMap).sort();
+            const prices = years.map(y => yearlyMap[y].price);
+            const qtys = years.map(y => yearlyMap[y].qty);
+
+            if (yearlyChartInstance) yearlyChartInstance.destroy();
+            const ctx = document.getElementById('chartYearly');
+            if(ctx) {
+                yearlyChartInstance = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: years.map(y => `${y}년`),
+                        datasets: [
+                            {
+                                label: '총 정산 금액 (원)',
+                                data: prices,
+                                backgroundColor: '#0284c7',
+                                borderRadius: 6
+                            },
+                            {
+                                label: '판매 수량 (개)',
+                                data: qtys,
+                                backgroundColor: '#34d399',
+                                borderRadius: 6
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: { y: { beginAtZero: true } }
+                    }
+                });
+            }
+
+            const tbody = document.getElementById('yearlyTableBody');
+            if(tbody) {
+                tbody.innerHTML = '';
+                if(years.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="5" class="p-6 text-center text-slate-400">데이터가 없습니다.</td></tr>`;
+                } else {
+                    years.forEach(y => {
+                        const item = yearlyMap[y];
+                        const avg = item.count > 0 ? Math.round(item.price / item.count) : 0;
+                        const tr = document.createElement('tr');
+                        tr.className = 'hover:bg-slate-50 transition';
+                        tr.innerHTML = `
+                            <td class="p-3 font-extrabold text-slate-800">${y}년</td>
+                            <td class="p-3 text-right font-medium text-slate-600">${item.count.toLocaleString()}건</td>
+                            <td class="p-3 text-right font-bold text-emerald-600">${item.qty.toLocaleString()}개</td>
+                            <td class="p-3 text-right font-black text-sky-600">${item.price.toLocaleString()}원</td>
+                            <td class="p-3 text-right font-medium text-slate-700">${avg.toLocaleString()}원</td>
+                        `;
+                        tbody.appendChild(tr);
+                    });
+                }
+            }
+        }
+
         function applyFilters() {
             const startDate = document.getElementById('filterStartDate').value;
             const endDate = document.getElementById('filterEndDate').value;
@@ -651,9 +751,9 @@
             updateDashboard();
         }
 
-        function filterByMonth(month) {
+        function filterByMonth(month, evt) {
             document.querySelectorAll('.month-btn').forEach(btn => btn.classList.remove('active'));
-            event.target.classList.add('active');
+            if(evt && evt.target) evt.target.classList.add('active');
 
             if (month === 'all') {
                 document.getElementById('filterStartDate').value = '';
@@ -664,7 +764,7 @@
                 document.getElementById('filterStartDate').value = `${year}-${m}-01`;
                 
                 const lastDay = new Date(year, parseInt(month), 0).getDate();
-                document.getElementById('filterEndDate').value = `${year}-${m}-${lastDay}`;
+                document.getElementById('filterEndDate').value = `${year}-${m}-${lastDay.toString().padStart(2, '0')}`;
             }
 
             applyFilters();
@@ -684,7 +784,6 @@
             updateDashboard();
         }
 
-        // 상세보기 모달 연결
         function showDetailModal(type) {
             const todayStr = new Date().toISOString().split('T')[0];
             const yesterday = new Date();
@@ -788,7 +887,6 @@
             XLSX.writeFile(workbook, `구글시트_전체실적데이터.xlsx`);
         }
 
-        // 페이지 로드 시 구글 시트 수집 개시
         document.addEventListener("DOMContentLoaded", function() {
             fetchSheetData();
         });
