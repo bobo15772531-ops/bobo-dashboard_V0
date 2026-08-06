@@ -609,6 +609,11 @@ filteredSheetData = rawSheetData.filter(row => {
     return !excludedStatuses.includes(row.status);
 });
 ```[cite: 1]
+
+### 💡 주요 특징 (끌려올만한 부분)
+* **`filter(row => row.date !== '')`[cite: 1]:** 주문일자가 비어 있거나 날짜 형식이 잘못된 빈 행 데이터를 깔끔하게 필터링하여 에러를 방지하고 있습니다.
+* **상태값 예외 처리 (`excludedStatuses`)[cite: 1]:** `취소`, `반품`, `교환` 상태인 주문을 `filteredSheetData`에서 제외하여 실제 정상 매출과 수량 통계가 정확하게 잡히도록 유도한 핵심 로직입니다[cite: 1].
+
                 const now = new Date();
                 document.getElementById('lastUpdatedText').innerText = `${now.toLocaleDateString()} ${now.toLocaleTimeString('ko-KR', {hour:'2-digit', minute:'2-digit'})}`;
                 document.getElementById('syncStatusText').innerHTML = `구글 시트 연동 완료! 총 <strong>${rawSheetData.length.toLocaleString()}건</strong>의 데이터를 수집했습니다.`;
