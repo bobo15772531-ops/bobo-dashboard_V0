@@ -577,51 +577,65 @@
         }
 
         async function fetchSheetData() {
-            document.getElementById('syncStatusText').innerText = "구글 시트 연동 데이터를 가져오는 중입니다...";
-            try {
-                const response = await fetch(GOOGLE_SHEET_CSV_URL);
-                if (!response.ok) throw new Error("데이터를 로드할 수 없습니다.");
+    const syncStatus = document.getElementById('syncStatusText');
+    if (syncStatus) syncStatus.innerText = "구글 시트 연동 데이터를 가져오는 중입니다...";
+    
+    try {
+        const response = await fetch(GOOGLE_SHEET_CSV_URL);
+        if (!response.ok) throw new Error("데이터를 로드할 수 없습니다.");
 
-                const csvText = await response.text();
-                const parsed = parseCSV(csvText);
+        const csvText = await response.text();
+        const parsed = parseCSV(csvText);
 
-                rawSheetData = parsed.map(item => {
-                    const rawDate = cleanDateStr(item['주문일자']);
-                    const year = rawDate ? rawDate.split('-')[0] : '기타';
-                    const month = rawDate ? rawDate.substring(5, 7) : '기타';
-                    const status = String(item['교환/반품여부'] || '').trim();
+        // 전체 데이터를 가공하여 전역 변수 rawSheetData에 저장
+        rawSheetData = parsed.map(item => {
+            const rawDate = cleanDateStr(item['주문일자']);
+            const year = rawDate ? rawDate.split('-')[0] : '기타';
+            const month = rawDate ? rawDate.substring(5, 7) : '기타';
+            const status = String(item['교환/반품여부'] || '').trim();
 
-                    return {
-                        date: rawDate,
-                        year: year,
-                        month: month,
-                        market: String(item['마켓'] || '기타').trim(),
-                        category: String(item['카테고리'] || '기타').trim(),
-                        model: String(item['모델명'] || '-').trim(),
-                        qty: Number(String(item['수량'] || 0).replace(/[^0-9.-]+/g, "")) || 0,
-                        price: Number(String(item['정산가'] || 0).replace(/[^0-9.-]+/g, "")) || 0,
-                        status: status
-                    };
-                }).filter(row => row.date !== '');
+            return {
+                date: rawDate,
+                year: year,
+                month: month,
+                market: String(item['마켓'] || '기타').trim(),
+                category: String(item['카테고리'] || '기타').trim(),
+                model: String(item['모델명'] || '-').trim(),
+                qty: Number(String(item['수량'] || 0).replace(/[^0-9.-]+/g, "")) || 0,
+                price: Number(String(item['정산가'] || 0).replace(/[^0-9.-]+/g, "")) || 0,
+                status: status
+            };
+        }).filter(row => row.date !== '');
 
-                filteredSheetData = rawSheetData.filter(row => {
-                    const excludedStatuses = ['취소', '반품', '교환'];
-                    return !excludedStatuses.includes(row.status);
-                });
+        // 취소, 반품, 교환 등을 제외한 유효 데이터만 필터링하여 전역 변수에 저장
+        filteredSheetData = rawSheetData.filter(row => {
+            const excludedStatuses = ['취소', '반품', '교환'];
+            return !excludedStatuses.includes(row.status);
+        });
 
-                const now = new Date();
-                document.getElementById('lastUpdatedText').innerText = `${now.toLocaleDateString()} ${now.toLocaleTimeString('ko-KR', {hour:'2-digit', minute:'2-digit'})}`;
-                document.getElementById('syncStatusText').innerHTML = `구글 시트 연동 완료! 총 <strong>${rawSheetData.length.toLocaleString()}건</strong>의 데이터를 수집했습니다.`;
-
-                populateFilterDropdowns();
-                updateDashboard();
-
-            } catch (error) {
-                console.error("구글 시트 연동 에러:", error);
-                document.getElementById('syncStatusText').innerText = "❌ 구글 시트 연동 실패. GOOGLE_SHEET_CSV_URL을 확인하세요.";
-            }
+        // UI 업데이트 텍스트 반영
+        const now = new Date();
+        const lastUpdated = document.getElementById('lastUpdatedText');
+        if (lastUpdated) lastUpdated.innerText = `${now.toLocaleDateString()} ${now.toLocaleTimeString('ko-KR', {hour:'2-digit', minute:'2-digit'})}`;
+        
+        if (syncStatus) {
+            syncStatus.innerHTML = `구글 시트 연동 완료! 총 <strong>${rawSheetData.length.toLocaleString()}건</strong>의 데이터를 수집했습니다.`;
         }
 
+        // 드롭다운 및 대시보드 화면 렌더링 함수 실행
+        if (typeof populateFilterDropdowns === 'function') populateFilterDropdowns();
+        if (typeof updateDashboard === 'function') updateDashboard();
+
+    } catch (error) {
+        console.error("구글 시트 연동 에러:", error);
+        if (syncStatus) syncStatus.innerText = "❌ 구글 시트 연동 실패. GOOGLE_SHEET_CSV_URL을 확인하세요.";
+    }
+}
+
+// 페이지가 로드될 때 자동으로 시트 데이터를 가져오도록 연결
+window.addEventListener('DOMContentLoaded', () => {
+    fetchSheetData();
+});
         function populateFilterDropdowns() {
             const markets = [...new Set(rawSheetData.map(d => d.market))].filter(Boolean);
             const categories = [...new Set(rawSheetData.map(d => d.category))].filter(Boolean);
