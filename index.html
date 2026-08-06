@@ -585,34 +585,29 @@
                 const csvText = await response.text();
                 const parsed = parseCSV(csvText);
 
-rawSheetData = parsed.map(item => {
-    const rawDate = cleanDateStr(item['주문일자']);
-    const year = rawDate ? rawDate.split('-')[0] : '기타';
-    const month = rawDate ? rawDate.substring(5, 7) : '기타';
-    const status = String(item['교환/반품여부'] || '').trim();
+                rawSheetData = parsed.map(item => {
+                    const rawDate = cleanDateStr(item['주문일자']);
+                    const year = rawDate ? rawDate.split('-')[0] : '기타';
+                    const month = rawDate ? rawDate.substring(5, 7) : '기타';
+                    const status = String(item['교환/반품여부'] || '').trim();
 
-    return {
-        date: rawDate,
-        year: year,
-        month: month,
-        market: String(item['마켓'] || '기타').trim(),
-        category: String(item['카테고리'] || '기타').trim(),
-        model: String(item['모델명'] || '-').trim(),
-        qty: Number(String(item['수량'] || 0).replace(/[^0-9.-]+/g, "")) || 0,
-        price: Number(String(item['정산가'] || 0).replace(/[^0-9.-]+/g, "")) || 0,
-        status: status
-    };
-}).filter(row => row.date !== '');
+                    return {
+                        date: rawDate,
+                        year: year,
+                        month: month,
+                        market: String(item['마켓'] || '기타').trim(),
+                        category: String(item['카테고리'] || '기타').trim(),
+                        model: String(item['모델명'] || '-').trim(),
+                        qty: Number(String(item['수량'] || 0).replace(/[^0-9.-]+/g, "")) || 0,
+                        price: Number(String(item['정산가'] || 0).replace(/[^0-9.-]+/g, "")) || 0,
+                        status: status
+                    };
+                }).filter(row => row.date !== '');
 
-filteredSheetData = rawSheetData.filter(row => {
-    const excludedStatuses = ['취소', '반품', '교환'];
-    return !excludedStatuses.includes(row.status);
-});
-```[cite: 1]
-
-### 💡 주요 특징 (끌려올만한 부분)
-* **`filter(row => row.date !== '')`[cite: 1]:** 주문일자가 비어 있거나 날짜 형식이 잘못된 빈 행 데이터를 깔끔하게 필터링하여 에러를 방지하고 있습니다.
-* **상태값 예외 처리 (`excludedStatuses`)[cite: 1]:** `취소`, `반품`, `교환` 상태인 주문을 `filteredSheetData`에서 제외하여 실제 정상 매출과 수량 통계가 정확하게 잡히도록 유도한 핵심 로직입니다[cite: 1].
+                filteredSheetData = rawSheetData.filter(row => {
+                    const excludedStatuses = ['취소', '반품', '교환'];
+                    return !excludedStatuses.includes(row.status);
+                });
 
                 const now = new Date();
                 document.getElementById('lastUpdatedText').innerText = `${now.toLocaleDateString()} ${now.toLocaleTimeString('ko-KR', {hour:'2-digit', minute:'2-digit'})}`;
@@ -904,7 +899,6 @@ filteredSheetData = rawSheetData.filter(row => {
         }
     }
 }
-```[cite: 1]
         function updateMonthlyTab() {
     const activeMonths = [...new Set(rawSheetData.map(r => r.month))].sort();
     const monthlyTableData = {};
@@ -1007,7 +1001,7 @@ filteredSheetData = rawSheetData.filter(row => {
         }
     }
 }
-```[cite: 1]
+
         function updateYearlyTab() {
     const activeYears = [...new Set(rawSheetData.map(r => r.year))].sort();
     const yearlyTableData = {};
@@ -1107,7 +1101,7 @@ filteredSheetData = rawSheetData.filter(row => {
         }
     }
 }
-```[cite: 1]
+
 
      function updateRankingTab() {
             const modelMap = {};
